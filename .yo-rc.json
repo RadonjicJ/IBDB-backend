@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.ibdbcompany.ibdb"
+    },
+    "jhipsterVersion": "6.10.5",
+    "applicationType": "monolith",
+    "baseName": "ibdb",
+    "packageName": "com.ibdbcompany.ibdb",
+    "packageFolder": "com/ibdbcompany/ibdb",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "NmQyZjE5NGQyYzBjNDQyODBkMzUzYTBkMjRjMGI4YWYyYTA0MzAyMmNkY2ZkYWViMDI4M2YzYjViNjkyNDJiZWIzOWNmMjhjZTM2NmQyOGZjNDA1OTNiYWU4ZTg3MmJjNmExYzBhMDA2Yjc1MWFiYTRmMGRmNzA1MmJjYjNkYzE=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "skipClient": true,
+    "creationTimestamp": 1615475553313,
+    "testFrameworks": ["protractor"],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
