@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ibdbcompany.ibdb.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,8 +60,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String email;
 
     @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Column(name ="activated")
+    private boolean activated;
 
     @Size(min = 2, max = 10)
     @Column(name = "lang_key", length = 10)
@@ -93,6 +94,27 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
+    /** PROBATI NA OVAJ NACIN ROLE DA SE IZVUKU
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = "user", allowSetters = true)
+    private Authority isAdmin;
+
+    public Authority getAuthority() {
+        return isAdmin;
+    }
+
+    public void setAuthority(Authority role) {
+        this.isAdmin = role;
+    }
+   */
 
     public Long getId() {
         return id;
@@ -189,14 +211,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setLangKey(String langKey) {
         this.langKey = langKey;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
     }
 
     @Override

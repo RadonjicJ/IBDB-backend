@@ -1,6 +1,7 @@
 package com.ibdbcompany.ibdb.web.rest;
 
 import com.ibdbcompany.ibdb.config.Constants;
+import com.ibdbcompany.ibdb.domain.Book;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.repository.UserRepository;
 import com.ibdbcompany.ibdb.security.AuthoritiesConstants;
@@ -176,7 +177,7 @@ public class UserResource {
      * @param login the login of the user to find.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping("/users/{login}")    //:" + Constants.LOGIN_REGEX + "
     public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return ResponseUtil.wrapOrNotFound(
@@ -184,13 +185,16 @@ public class UserResource {
                 .map(UserDTO::new));
     }
 
+
+
+
     /**
      * {@code DELETE /users/:login} : delete the "login" User.
      *
      * @param login the login of the user to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @DeleteMapping("/users/{login}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);

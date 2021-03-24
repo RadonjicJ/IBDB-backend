@@ -48,6 +48,13 @@ public class CacheConfiguration {
             createCache(cm, com.ibdbcompany.ibdb.domain.User.class.getName());
             createCache(cm, com.ibdbcompany.ibdb.domain.Authority.class.getName());
             createCache(cm, com.ibdbcompany.ibdb.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.ibdbcompany.ibdb.domain.Category.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Author.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Book.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Book.class.getName() + ".categories");
+            createCache(cm, com.ibdbcompany.ibdb.domain.Category.class.getName() + ".books");
+            createCache(cm, com.ibdbcompany.ibdb.domain.Comment.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Quote.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

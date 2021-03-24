@@ -2,6 +2,7 @@ package com.ibdbcompany.ibdb.service;
 
 import com.ibdbcompany.ibdb.config.Constants;
 import com.ibdbcompany.ibdb.domain.Authority;
+import com.ibdbcompany.ibdb.domain.Book;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.repository.AuthorityRepository;
 import com.ibdbcompany.ibdb.repository.UserRepository;
@@ -113,7 +114,7 @@ public class UserService {
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
-        newUser.setActivated(false);
+        newUser.setActivated(true);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
@@ -294,6 +295,16 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Optional<User> findOneById(Long id) {
+        log.debug("Request to get Book : {}", id);
+        return userRepository.findOneById(id);
+    }
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
@@ -301,4 +312,5 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
 }
