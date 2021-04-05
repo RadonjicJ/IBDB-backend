@@ -3,8 +3,10 @@ package com.ibdbcompany.ibdb.service;
 import com.ibdbcompany.ibdb.config.Constants;
 import com.ibdbcompany.ibdb.domain.Authority;
 import com.ibdbcompany.ibdb.domain.Book;
+import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.repository.AuthorityRepository;
+import com.ibdbcompany.ibdb.repository.RoleRepository;
 import com.ibdbcompany.ibdb.repository.UserRepository;
 import com.ibdbcompany.ibdb.security.AuthoritiesConstants;
 import com.ibdbcompany.ibdb.security.SecurityUtils;
@@ -27,6 +29,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 /**
  * Service class for managing users.
  */
@@ -42,15 +46,17 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
+    private final RoleRepository roleRepository;
+
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, RoleRepository roleRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.roleRepository = roleRepository;
         this.cacheManager = cacheManager;
     }
-
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository.findOneByActivationKey(key)
@@ -120,6 +126,9 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
+        Set<Role> roles = new HashSet<>();
+        roleRepository.findOneByName(AuthoritiesConstants.USER).ifPresent(roles::add);
+        newUser.setRoles(roles);
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
@@ -128,7 +137,7 @@ public class UserService {
 
     private boolean removeNonActivatedUser(User existingUser) {
         if (existingUser.getActivated()) {
-             return false;
+            return false;
         }
         userRepository.delete(existingUser);
         userRepository.flush();
@@ -262,7 +271,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneWithAuthoritiesByLogin(login);
+        return userRepository.findOneWithEagerRelationships(login);
     }
 
     @Transactional(readOnly = true)
@@ -285,6 +294,14 @@ public class UserService {
                 this.clearUserCaches(user);
             });
     }
+    /**
+     * Gets a list of all the authorities.
+     * @return a list of all the authorities.
+     */
+    @Transactional(readOnly = true)
+    public List<Role> findRoles() {
+        return roleRepository.findAll();
+    }
 
     /**
      * Gets a list of all the authorities.
@@ -295,16 +312,7 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public Optional<User> findOneById(Long id) {
-        log.debug("Request to get Book : {}", id);
-        return userRepository.findOneById(id);
-    }
+
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
@@ -312,5 +320,4 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
-
 }

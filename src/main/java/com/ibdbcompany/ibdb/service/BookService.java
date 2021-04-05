@@ -28,7 +28,7 @@ public class BookService {
     }
 
     /**
-     * Save a book.
+     *
      *
      * @param book the entity to save.
      * @return the persisted entity.

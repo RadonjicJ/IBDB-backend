@@ -3,10 +3,13 @@ package com.ibdbcompany.ibdb.service.dto;
 import com.ibdbcompany.ibdb.config.Constants;
 
 import com.ibdbcompany.ibdb.domain.Authority;
+import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,6 +53,8 @@ public class UserDTO {
 
     private Set<String> authorities;
 
+    private Set<Role> roles;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -70,6 +75,7 @@ public class UserDTO {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        this.roles = new LinkedHashSet<Role>(user.getRoles());
     }
 
     public Long getId() {
@@ -176,6 +182,14 @@ public class UserDTO {
         this.authorities = authorities;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -192,6 +206,7 @@ public class UserDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", roles=" + roles +
             "}";
     }
 }

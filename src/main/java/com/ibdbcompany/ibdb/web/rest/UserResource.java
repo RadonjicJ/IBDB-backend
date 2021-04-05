@@ -27,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -65,6 +66,7 @@ public class UserResource {
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(Arrays.asList("id", "login", "firstName", "lastName", "email", "activated", "langKey"));
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
+    private static final String ENTITY_NAME = "book";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -80,7 +82,6 @@ public class UserResource {
         this.userRepository = userRepository;
         this.mailService = mailService;
     }
-
     /**
      * {@code POST  /users}  : Creates a new user.
      * <p>
@@ -201,4 +202,5 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + login, login)).build();
     }
+
 }

@@ -55,6 +55,8 @@ public class CacheConfiguration {
             createCache(cm, com.ibdbcompany.ibdb.domain.Category.class.getName() + ".books");
             createCache(cm, com.ibdbcompany.ibdb.domain.Comment.class.getName());
             createCache(cm, com.ibdbcompany.ibdb.domain.Quote.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Role.class.getName());
+            createCache(cm, com.ibdbcompany.ibdb.domain.Role.class.getName() + ".users");
             // jhipster-needle-ehcache-add-entry
         };
     }

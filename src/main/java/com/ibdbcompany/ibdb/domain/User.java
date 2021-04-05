@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -84,8 +85,45 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @NotNull
+    @JoinTable(name = "user_role",
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    @OrderBy("name ASC")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
+    private Set<Role> roles = new LinkedHashSet<Role>();
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public User roles(Set<Role> roles) {
+        this.roles = roles;
+        return this;
+    }
+
+    public User addRole(Role role) {
+        this.roles.add(role);
+        role.getUsers().add(this);
+        return this;
+    }
+
+    public User removeCategory(Role role) {
+        this.roles.remove(role);
+        role.getUsers().remove(this);
+        return this;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "jhi_user_authority",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

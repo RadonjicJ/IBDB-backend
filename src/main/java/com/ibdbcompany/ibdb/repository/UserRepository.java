@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.repository;
 
+import com.ibdbcompany.ibdb.domain.Book;
 import com.ibdbcompany.ibdb.domain.User;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -35,9 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByLogin(String login);
 
-    @Query("select user from User user where user.id =:id")
-    Optional<User> findOneById(@Param("id") Long id);
-
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneWithAuthoritiesByLogin(String login);
@@ -47,5 +45,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String email);
 
     Page<User> findAllByLoginNot(Pageable pageable, String login);
+
+
+    @Query(value = "select distinct user from User user left join fetch user.roles",
+        countQuery = "select count(distinct user) from User user")
+    Page<User> findAllWithEagerRelationships(Pageable pageable);
+    @Query("select distinct user from User user left join fetch user.roles")
+    List<Book> findAllWithEagerRelationships();
+
+
+    @Query("select user from User user left join fetch user.roles where user.login =:login")
+    Optional<User> findOneWithEagerRelationships(@Param("login") String login);
+
 
 }
