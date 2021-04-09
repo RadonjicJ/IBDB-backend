@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.service.mapper;
 
+import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.service.dto.UserDTO;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -66,10 +67,12 @@ public class UserMapperTest {
     }
 
     @Test
-    public void userDTOsToUsersWithAuthoritiesStringShouldMapToUsersWithAuthoritiesDomain() {
-        Set<String> authoritiesAsString = new HashSet<>();
-        authoritiesAsString.add("ADMIN");
-        userDto.setAuthorities(authoritiesAsString);
+    public void userDTOsToUsersWithRolesStringShouldMapToUsersWithRolesDomain() {
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+        userDto.setRoles(roles);
 
         List<UserDTO> usersDto = new ArrayList<>();
         usersDto.add(userDto);
@@ -78,14 +81,14 @@ public class UserMapperTest {
 
         assertThat(users).isNotEmpty();
         assertThat(users).size().isEqualTo(1);
-        assertThat(users.get(0).getAuthorities()).isNotNull();
-        assertThat(users.get(0).getAuthorities()).isNotEmpty();
-        assertThat(users.get(0).getAuthorities().iterator().next().getName()).isEqualTo("ADMIN");
+        assertThat(users.get(0).getRoles()).isNotNull();
+        assertThat(users.get(0).getRoles()).isNotEmpty();
+        assertThat(users.get(0).getRoles().iterator().next().getName()).isEqualTo("ROLE_ADMIN");
     }
 
     @Test
-    public void userDTOsToUsersMapWithNullAuthoritiesStringShouldReturnUserWithEmptyAuthorities() {
-        userDto.setAuthorities(null);
+    public void userDTOsToUsersMapWithNullRolesStringShouldReturnUserWithEmptyRoles() {
+        userDto.setRoles(null);
 
         List<UserDTO> usersDto = new ArrayList<>();
         usersDto.add(userDto);
@@ -94,33 +97,35 @@ public class UserMapperTest {
 
         assertThat(users).isNotEmpty();
         assertThat(users).size().isEqualTo(1);
-        assertThat(users.get(0).getAuthorities()).isNotNull();
-        assertThat(users.get(0).getAuthorities()).isEmpty();
+        assertThat(users.get(0).getRoles()).isNotNull();
+        assertThat(users.get(0).getRoles()).isEmpty();
     }
 
     @Test
-    public void userDTOToUserMapWithAuthoritiesStringShouldReturnUserWithAuthorities() {
-        Set<String> authoritiesAsString = new HashSet<>();
-        authoritiesAsString.add("ADMIN");
-        userDto.setAuthorities(authoritiesAsString);
+    public void userDTOToUserMapWithRolesStringShouldReturnUserWithRoles() {
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+        userDto.setRoles(roles);
 
         User user = userMapper.userDTOToUser(userDto);
 
         assertThat(user).isNotNull();
-        assertThat(user.getAuthorities()).isNotNull();
-        assertThat(user.getAuthorities()).isNotEmpty();
-        assertThat(user.getAuthorities().iterator().next().getName()).isEqualTo("ADMIN");
+        assertThat(user.getRoles()).isNotNull();
+        assertThat(user.getRoles()).isNotEmpty();
+        assertThat(user.getRoles().iterator().next().getName()).isEqualTo("ROLE_ADMIN");
     }
 
     @Test
-    public void userDTOToUserMapWithNullAuthoritiesStringShouldReturnUserWithEmptyAuthorities() {
-        userDto.setAuthorities(null);
+    public void userDTOToUserMapWithNullRolesStringShouldReturnUserWithEmptyRoles() {
+        userDto.setRoles(null);
 
         User user = userMapper.userDTOToUser(userDto);
 
         assertThat(user).isNotNull();
-        assertThat(user.getAuthorities()).isNotNull();
-        assertThat(user.getAuthorities()).isEmpty();
+        assertThat(user.getRoles()).isNotNull();
+        assertThat(user.getRoles()).isEmpty();
     }
 
     @Test

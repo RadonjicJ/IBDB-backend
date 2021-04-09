@@ -85,8 +85,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToMany() //fetch = FetchType.EAGER
     @NotNull
     @JoinTable(name = "user_role",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
@@ -94,7 +94,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @OrderBy("name ASC")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
-    private Set<Role> roles = new LinkedHashSet<Role>();
+    private Set<Role> roles = new HashSet<>();
 
     public Set<Role> getRoles() {
         return roles;
@@ -121,7 +121,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.roles = roles;
     }
 
-
+/**
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

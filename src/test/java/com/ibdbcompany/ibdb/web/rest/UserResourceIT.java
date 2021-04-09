@@ -2,6 +2,7 @@ package com.ibdbcompany.ibdb.web.rest;
 
 import com.ibdbcompany.ibdb.IbdbApp;
 import com.ibdbcompany.ibdb.domain.Authority;
+import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.repository.UserRepository;
 import com.ibdbcompany.ibdb.security.AuthoritiesConstants;
@@ -115,7 +116,10 @@ public class UserResourceIT {
     @Transactional
     public void createUser() throws Exception {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
-
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
         // Create the User
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setLogin(DEFAULT_LOGIN);
@@ -126,7 +130,7 @@ public class UserResourceIT {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         restUserMockMvc.perform(post("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -150,6 +154,10 @@ public class UserResourceIT {
     @Transactional
     public void createUserWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
 
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setId(1L);
@@ -161,7 +169,7 @@ public class UserResourceIT {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserMockMvc.perform(post("/api/users")
@@ -179,7 +187,10 @@ public class UserResourceIT {
         // Initialize the database
         userRepository.saveAndFlush(user);
         int databaseSizeBeforeCreate = userRepository.findAll().size();
-
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setLogin(DEFAULT_LOGIN);// this login should already be used
         managedUserVM.setPassword(DEFAULT_PASSWORD);
@@ -189,7 +200,7 @@ public class UserResourceIT {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         // Create the User
         restUserMockMvc.perform(post("/api/users")
@@ -208,6 +219,11 @@ public class UserResourceIT {
         userRepository.saveAndFlush(user);
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setLogin("anotherlogin");
         managedUserVM.setPassword(DEFAULT_PASSWORD);
@@ -217,7 +233,7 @@ public class UserResourceIT {
         managedUserVM.setActivated(true);
         managedUserVM.setImageUrl(DEFAULT_IMAGEURL);
         managedUserVM.setLangKey(DEFAULT_LANGKEY);
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         // Create the User
         restUserMockMvc.perform(post("/api/users")
@@ -298,6 +314,10 @@ public class UserResourceIT {
 
         // Update the user
         User updatedUser = userRepository.findById(user.getId()).get();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
 
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setId(updatedUser.getId());
@@ -313,7 +333,7 @@ public class UserResourceIT {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -342,6 +362,11 @@ public class UserResourceIT {
         // Update the user
         User updatedUser = userRepository.findById(user.getId()).get();
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         ManagedUserVM managedUserVM = new ManagedUserVM();
         managedUserVM.setId(updatedUser.getId());
         managedUserVM.setLogin(UPDATED_LOGIN);
@@ -356,7 +381,7 @@ public class UserResourceIT {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -381,6 +406,11 @@ public class UserResourceIT {
     public void updateUserExistingEmail() throws Exception {
         // Initialize the database with 2 users
         userRepository.saveAndFlush(user);
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
 
         User anotherUser = new User();
         anotherUser.setLogin("jhipster");
@@ -410,7 +440,7 @@ public class UserResourceIT {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -423,6 +453,11 @@ public class UserResourceIT {
     public void updateUserExistingLogin() throws Exception {
         // Initialize the database
         userRepository.saveAndFlush(user);
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
 
         User anotherUser = new User();
         anotherUser.setLogin("jhipster");
@@ -452,7 +487,7 @@ public class UserResourceIT {
         managedUserVM.setCreatedDate(updatedUser.getCreatedDate());
         managedUserVM.setLastModifiedBy(updatedUser.getLastModifiedBy());
         managedUserVM.setLastModifiedDate(updatedUser.getLastModifiedDate());
-        managedUserVM.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        managedUserVM.setRoles(roles);
 
         restUserMockMvc.perform(put("/api/users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -507,6 +542,12 @@ public class UserResourceIT {
     @Test
     public void testUserDTOtoUser() {
         UserDTO userDTO = new UserDTO();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         userDTO.setId(DEFAULT_ID);
         userDTO.setLogin(DEFAULT_LOGIN);
         userDTO.setFirstName(DEFAULT_FIRSTNAME);
@@ -517,7 +558,7 @@ public class UserResourceIT {
         userDTO.setLangKey(DEFAULT_LANGKEY);
         userDTO.setCreatedBy(DEFAULT_LOGIN);
         userDTO.setLastModifiedBy(DEFAULT_LOGIN);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        userDTO.setRoles(roles);
 
         User user = userMapper.userDTOToUser(userDTO);
         assertThat(user.getId()).isEqualTo(DEFAULT_ID);
@@ -532,7 +573,7 @@ public class UserResourceIT {
         assertThat(user.getCreatedDate()).isNotNull();
         assertThat(user.getLastModifiedBy()).isNull();
         assertThat(user.getLastModifiedDate()).isNotNull();
-        assertThat(user.getAuthorities()).extracting("name").containsExactly(AuthoritiesConstants.USER);
+        assertThat(user.getRoles()).extracting("name").containsExactly(AuthoritiesConstants.USER);
     }
 
     @Test
@@ -542,11 +583,11 @@ public class UserResourceIT {
         user.setCreatedDate(Instant.now());
         user.setLastModifiedBy(DEFAULT_LOGIN);
         user.setLastModifiedDate(Instant.now());
-        Set<Authority> authorities = new HashSet<>();
-        Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.USER);
-        authorities.add(authority);
-        user.setAuthorities(authorities);
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+        user.setRoles(roles);
 
         UserDTO userDTO = userMapper.userToUserDTO(user);
 
@@ -562,7 +603,7 @@ public class UserResourceIT {
         assertThat(userDTO.getCreatedDate()).isEqualTo(user.getCreatedDate());
         assertThat(userDTO.getLastModifiedBy()).isEqualTo(DEFAULT_LOGIN);
         assertThat(userDTO.getLastModifiedDate()).isEqualTo(user.getLastModifiedDate());
-        assertThat(userDTO.getAuthorities()).containsExactly(AuthoritiesConstants.USER);
+        assertThat(userDTO.getRoles()).containsExactly(role);
         assertThat(userDTO.toString()).isNotNull();
     }
 

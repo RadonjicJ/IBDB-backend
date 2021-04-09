@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.service;
 
+import com.google.common.base.Strings;
 import com.ibdbcompany.ibdb.config.Constants;
 import com.ibdbcompany.ibdb.domain.Authority;
 import com.ibdbcompany.ibdb.domain.Book;
@@ -44,16 +45,16 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthorityRepository authorityRepository;
+    //private final AuthorityRepository authorityRepository;
 
     private final RoleRepository roleRepository;
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, RoleRepository roleRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorityRepository = authorityRepository;
+        //this.authorityRepository = authorityRepository;
         this.roleRepository = roleRepository;
         this.cacheManager = cacheManager;
     }
@@ -123,14 +124,12 @@ public class UserService {
         newUser.setActivated(true);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
-        Set<Authority> authorities = new HashSet<>();
-        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
-        newUser.setAuthorities(authorities);
+
         Set<Role> roles = new HashSet<>();
         roleRepository.findOneByName(AuthoritiesConstants.USER).ifPresent(roles::add);
         newUser.setRoles(roles);
+
         userRepository.save(newUser);
-        this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -159,21 +158,18 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO.getAuthorities().stream()
-                .map(authorityRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-            user.setAuthorities(authorities);
+
+        // Set roles
+        if (userDTO.getRoles() != null) {
+            user.setRoles(userDTO.getRoles());
         }
+
         userRepository.save(user);
-        this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -200,26 +196,36 @@ public class UserService {
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
-                Set<Authority> managedAuthorities = user.getAuthorities();
-                managedAuthorities.clear();
-                userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(managedAuthorities::add);
-                this.clearUserCaches(user);
+
+                // Set password if changed
+                if (!Strings.isNullOrEmpty(userDTO.getPassword())) {
+                    String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
+                    user.setPassword(encryptedPassword);
+                }
+
+                // Set roles
+                Set<Role> managedRoles = user.getRoles();
+                managedRoles.clear();
+                managedRoles.addAll(userDTO.getRoles());
+
                 log.debug("Changed Information for User: {}", user);
                 return user;
             })
             .map(UserDTO::new);
     }
-
+/**
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
         });
+    }
+*/
+    @Transactional
+    public void deteteUserByLogin(String login) {
+        log.debug("Request to delete User : {}", login);
+        userRepository.deteteUserByLogin(login);
     }
 
     /**
@@ -265,35 +271,39 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    public Page<UserDTO> findAllManagedUsers(Pageable pageable) {
+        return userRepository.findAllByLoginNot( pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneWithEagerRelationships(login);
+    public Optional<User> findUserWithRolesByLogin(String login) {
+        return userRepository.findOneWithRolesByLogin(login);
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthorities() {
-        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
+    public Optional<User> findUserWithRoles() {
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithRolesByLogin);
     }
 
-    /**
-     * Not activated users should be automatically deleted after 3 days.
-     * <p>
-     * This is scheduled to get fired everyday, at 01:00 (am).
-     */
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void removeNotActivatedUsers() {
-        userRepository
-            .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
-            .forEach(user -> {
-                log.debug("Deleting not activated user {}", user.getLogin());
-                userRepository.delete(user);
-                this.clearUserCaches(user);
-            });
+    @Transactional(readOnly = true)
+    public Page<UserDTO> findAllUsersByLogin(String login, Pageable pageable) {
+        return userRepository.findAllByLoginNotAndLoginContains(Constants.ANONYMOUS_USER, login, pageable).map(UserDTO::new);
     }
+
+        /**
+         * Not activated users should be automatically deleted after 3 days.
+         * <p>
+         * This is scheduled to get fired everyday, at 01:00 (am).
+         */
+        @Scheduled(cron = "0 0 1 * * ?")
+        public void removeNotActivatedUsers() {
+            userRepository
+                .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
+                .forEach(user -> {
+                    log.debug("Deleting not activated user {}", user.getLogin());
+                    userRepository.delete(user);
+                });
+        }
     /**
      * Gets a list of all the authorities.
      * @return a list of all the authorities.
@@ -306,13 +316,13 @@ public class UserService {
     /**
      * Gets a list of all the authorities.
      * @return a list of all the authorities.
-     */
+     *
     @Transactional(readOnly = true)
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
-
+    */
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());

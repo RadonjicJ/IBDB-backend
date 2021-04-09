@@ -17,6 +17,12 @@ import java.util.stream.Collectors;
  * A DTO representing a user, with his authorities.
  */
 public class UserDTO {
+    public static final int PASSWORD_MIN_LENGTH = 4;
+
+    public static final int PASSWORD_MAX_LENGTH = 100;
+
+    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
+    private String password;
 
     private Long id;
 
@@ -51,7 +57,7 @@ public class UserDTO {
 
     private Instant lastModifiedDate;
 
-    private Set<String> authorities;
+    //private Set<String> authorities;
 
     private Set<Role> roles;
 
@@ -72,10 +78,17 @@ public class UserDTO {
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
-        this.authorities = user.getAuthorities().stream()
+       /** this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
-            .collect(Collectors.toSet());
-        this.roles = new LinkedHashSet<Role>(user.getRoles());
+            .collect(Collectors.toSet());*/
+        this.roles = new HashSet<>(user.getRoles());
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
@@ -173,7 +186,7 @@ public class UserDTO {
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-
+/**
     public Set<String> getAuthorities() {
         return authorities;
     }
@@ -181,10 +194,10 @@ public class UserDTO {
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
     }
-
+*/
     public Set<Role> getRoles() {
-        return roles;
-    }
+    return roles;
+}
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
@@ -205,7 +218,7 @@ public class UserDTO {
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
+         //   ", authorities=" + authorities +
             ", roles=" + roles +
             "}";
     }

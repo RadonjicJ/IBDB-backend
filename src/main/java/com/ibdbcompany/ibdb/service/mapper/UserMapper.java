@@ -49,13 +49,14 @@ public class UserMapper {
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
             user.setLangKey(userDTO.getLangKey());
-            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
-            user.setAuthorities(authorities);
+           // Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
+           // user.setAuthorities(authorities);
+            user.setRoles(userDTO.getRoles() != null ? userDTO.getRoles() : new HashSet<>());
             return user;
         }
     }
 
-
+/**
     private Set<Authority> authoritiesFromStrings(Set<String> authoritiesAsString) {
         Set<Authority> authorities = new HashSet<>();
 
@@ -69,7 +70,7 @@ public class UserMapper {
 
         return authorities;
     }
-
+*/
     public User userFromId(Long id) {
         if (id == null) {
             return null;

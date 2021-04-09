@@ -2,8 +2,10 @@ package com.ibdbcompany.ibdb.web.rest;
 
 import com.ibdbcompany.ibdb.IbdbApp;
 import com.ibdbcompany.ibdb.config.Constants;
+import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 import com.ibdbcompany.ibdb.repository.AuthorityRepository;
+import com.ibdbcompany.ibdb.repository.RoleRepository;
 import com.ibdbcompany.ibdb.repository.UserRepository;
 import com.ibdbcompany.ibdb.security.AuthoritiesConstants;
 import com.ibdbcompany.ibdb.service.UserService;
@@ -11,6 +13,7 @@ import com.ibdbcompany.ibdb.service.dto.PasswordChangeDTO;
 import com.ibdbcompany.ibdb.service.dto.UserDTO;
 import com.ibdbcompany.ibdb.web.rest.vm.KeyAndPasswordVM;
 import com.ibdbcompany.ibdb.web.rest.vm.ManagedUserVM;
+import io.github.jhipster.security.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +48,7 @@ public class AccountResourceIT {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthorityRepository authorityRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
     private UserService userService;
@@ -79,8 +82,8 @@ public class AccountResourceIT {
 
     @Test
     public void testGetExistingAccount() throws Exception {
-        Set<String> authorities = new HashSet<>();
-        authorities.add(AuthoritiesConstants.ADMIN);
+        List<Role> roles = roleRepository.findAll();
+
 
         UserDTO user = new UserDTO();
         user.setLogin(TEST_USER_LOGIN);
@@ -89,7 +92,8 @@ public class AccountResourceIT {
         user.setEmail("john.doe@jhipster.com");
         user.setImageUrl("http://placehold.it/50x50");
         user.setLangKey("en");
-        user.setAuthorities(authorities);
+        user.setPassword(RandomUtil.generatePassword());
+        user.setRoles(new HashSet<>(roles));
         userService.createUser(user);
 
         restAccountMockMvc.perform(get("/api/account")
@@ -116,6 +120,11 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterValid() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         validUser.setLogin("test-register-valid");
         validUser.setPassword("password");
         validUser.setFirstName("Alice");
@@ -123,7 +132,7 @@ public class AccountResourceIT {
         validUser.setEmail("test-register-valid@example.com");
         validUser.setImageUrl("http://placehold.it/50x50");
         validUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        validUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        validUser.setRoles(roles);
         assertThat(userRepository.findOneByLogin("test-register-valid").isPresent()).isFalse();
 
         restAccountMockMvc.perform(
@@ -139,6 +148,12 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterInvalidLogin() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         invalidUser.setLogin("funky-log(n");// <-- invalid
         invalidUser.setPassword("password");
         invalidUser.setFirstName("Funky");
@@ -147,7 +162,7 @@ public class AccountResourceIT {
         invalidUser.setActivated(true);
         invalidUser.setImageUrl("http://placehold.it/50x50");
         invalidUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        invalidUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        invalidUser.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/register")
@@ -163,6 +178,11 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterInvalidEmail() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         invalidUser.setLogin("bob");
         invalidUser.setPassword("password");
         invalidUser.setFirstName("Bob");
@@ -171,7 +191,7 @@ public class AccountResourceIT {
         invalidUser.setActivated(true);
         invalidUser.setImageUrl("http://placehold.it/50x50");
         invalidUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        invalidUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        invalidUser.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/register")
@@ -187,6 +207,11 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterInvalidPassword() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         invalidUser.setLogin("bob");
         invalidUser.setPassword("123");// password with only 3 digits
         invalidUser.setFirstName("Bob");
@@ -195,7 +220,7 @@ public class AccountResourceIT {
         invalidUser.setActivated(true);
         invalidUser.setImageUrl("http://placehold.it/50x50");
         invalidUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        invalidUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        invalidUser.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/register")
@@ -211,6 +236,11 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterNullPassword() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         invalidUser.setLogin("bob");
         invalidUser.setPassword(null);// invalid null password
         invalidUser.setFirstName("Bob");
@@ -219,7 +249,7 @@ public class AccountResourceIT {
         invalidUser.setActivated(true);
         invalidUser.setImageUrl("http://placehold.it/50x50");
         invalidUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        invalidUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        invalidUser.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/register")
@@ -236,6 +266,11 @@ public class AccountResourceIT {
     public void testRegisterDuplicateLogin() throws Exception {
         // First registration
         ManagedUserVM firstUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         firstUser.setLogin("alice");
         firstUser.setPassword("password");
         firstUser.setFirstName("Alice");
@@ -243,7 +278,7 @@ public class AccountResourceIT {
         firstUser.setEmail("alice@example.com");
         firstUser.setImageUrl("http://placehold.it/50x50");
         firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        firstUser.setRoles(roles);
 
         // Duplicate login, different email
         ManagedUserVM secondUser = new ManagedUserVM();
@@ -258,7 +293,7 @@ public class AccountResourceIT {
         secondUser.setCreatedDate(firstUser.getCreatedDate());
         secondUser.setLastModifiedBy(firstUser.getLastModifiedBy());
         secondUser.setLastModifiedDate(firstUser.getLastModifiedDate());
-        secondUser.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
+        secondUser.setRoles(new HashSet<>(firstUser.getRoles()));
 
         // First user
         restAccountMockMvc.perform(
@@ -292,6 +327,11 @@ public class AccountResourceIT {
     public void testRegisterDuplicateEmail() throws Exception {
         // First user
         ManagedUserVM firstUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         firstUser.setLogin("test-register-duplicate-email");
         firstUser.setPassword("password");
         firstUser.setFirstName("Alice");
@@ -299,7 +339,7 @@ public class AccountResourceIT {
         firstUser.setEmail("test-register-duplicate-email@example.com");
         firstUser.setImageUrl("http://placehold.it/50x50");
         firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+        firstUser.setRoles(roles);
 
         // Register first user
         restAccountMockMvc.perform(
@@ -320,7 +360,7 @@ public class AccountResourceIT {
         secondUser.setEmail(firstUser.getEmail());
         secondUser.setImageUrl(firstUser.getImageUrl());
         secondUser.setLangKey(firstUser.getLangKey());
-        secondUser.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
+        secondUser.setRoles(new HashSet<>(firstUser.getRoles()));
 
         // Register second (non activated) user
         restAccountMockMvc.perform(
@@ -345,7 +385,7 @@ public class AccountResourceIT {
         userWithUpperCaseEmail.setEmail("TEST-register-duplicate-email@example.com");
         userWithUpperCaseEmail.setImageUrl(firstUser.getImageUrl());
         userWithUpperCaseEmail.setLangKey(firstUser.getLangKey());
-        userWithUpperCaseEmail.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
+        userWithUpperCaseEmail.setRoles(new HashSet<>(firstUser.getRoles()));
 
         // Register third (not activated) user
         restAccountMockMvc.perform(
@@ -373,6 +413,11 @@ public class AccountResourceIT {
     @Transactional
     public void testRegisterAdminIsIgnored() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         validUser.setLogin("badguy");
         validUser.setPassword("password");
         validUser.setFirstName("Bad");
@@ -381,7 +426,7 @@ public class AccountResourceIT {
         validUser.setActivated(true);
         validUser.setImageUrl("http://placehold.it/50x50");
         validUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        validUser.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        validUser.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/register")
@@ -389,10 +434,11 @@ public class AccountResourceIT {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> userDup = userRepository.findOneWithAuthoritiesByLogin("badguy");
+     /**   Optional<User> userDup = userRepository.findOneWithRolesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
-        assertThat(userDup.get().getAuthorities()).hasSize(1)
-            .containsExactly(authorityRepository.findById(AuthoritiesConstants.USER).get());
+        assertThat(userDup.get().getRoles()).hasSize(1)
+            .containsExactly(roleRepository.findById(AuthoritiesConstants.USER).get());
+    */
     }
 
     @Test
@@ -433,6 +479,11 @@ public class AccountResourceIT {
         user.setActivated(true);
         userRepository.saveAndFlush(user);
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin("not-used");
         userDTO.setFirstName("firstname");
@@ -441,7 +492,7 @@ public class AccountResourceIT {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/account")
@@ -449,7 +500,7 @@ public class AccountResourceIT {
                 .content(TestUtil.convertObjectToJsonBytes(userDTO)))
             .andExpect(status().isOk());
 
-        User updatedUser = userRepository.findOneWithAuthoritiesByLogin(user.getLogin()).orElse(null);
+        User updatedUser = userRepository.findOneWithRolesByLogin(user.getLogin()).orElse(null);
         assertThat(updatedUser.getFirstName()).isEqualTo(userDTO.getFirstName());
         assertThat(updatedUser.getLastName()).isEqualTo(userDTO.getLastName());
         assertThat(updatedUser.getEmail()).isEqualTo(userDTO.getEmail());
@@ -457,7 +508,7 @@ public class AccountResourceIT {
         assertThat(updatedUser.getPassword()).isEqualTo(user.getPassword());
         assertThat(updatedUser.getImageUrl()).isEqualTo(userDTO.getImageUrl());
         assertThat(updatedUser.getActivated()).isEqualTo(true);
-        assertThat(updatedUser.getAuthorities()).isEmpty();
+        assertThat(updatedUser.getRoles()).isEmpty();
     }
 
     @Test
@@ -472,6 +523,11 @@ public class AccountResourceIT {
 
         userRepository.saveAndFlush(user);
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin("not-used");
         userDTO.setFirstName("firstname");
@@ -480,7 +536,7 @@ public class AccountResourceIT {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/account")
@@ -510,6 +566,11 @@ public class AccountResourceIT {
 
         userRepository.saveAndFlush(anotherUser);
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin("not-used");
         userDTO.setFirstName("firstname");
@@ -518,7 +579,7 @@ public class AccountResourceIT {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/account")
@@ -541,6 +602,11 @@ public class AccountResourceIT {
         user.setActivated(true);
         userRepository.saveAndFlush(user);
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        roles.add(role);
+
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin("not-used");
         userDTO.setFirstName("firstname");
@@ -549,7 +615,7 @@ public class AccountResourceIT {
         userDTO.setActivated(false);
         userDTO.setImageUrl("http://placehold.it/50x50");
         userDTO.setLangKey(Constants.DEFAULT_LANGUAGE);
-        userDTO.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+        userDTO.setRoles(roles);
 
         restAccountMockMvc.perform(
             post("/api/account")
