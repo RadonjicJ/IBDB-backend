@@ -104,7 +104,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.roles = roles;
         return this;
     }
-
+/**
     public User addRole(Role role) {
         this.roles.add(role);
         role.getUsers().add(this);
@@ -116,7 +116,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
         role.getUsers().remove(this);
         return this;
     }
-
+*/
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }

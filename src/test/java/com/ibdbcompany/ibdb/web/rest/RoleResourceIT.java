@@ -67,7 +67,7 @@ public class RoleResourceIT {
      *
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
-     */
+     *
     public static Role createEntity(EntityManager em) {
         Role role = new Role()
             .name(DEFAULT_NAME);
@@ -83,7 +83,7 @@ public class RoleResourceIT {
      *
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
-     */
+     *
     public static Role createUpdatedEntity(EntityManager em) {
         Role role = new Role()
             .name(UPDATED_NAME);
@@ -94,12 +94,12 @@ public class RoleResourceIT {
         role.getUsers().add(user);
         return role;
     }
-
+*
     @BeforeEach
     public void initTest() {
         role = createEntity(em);
     }
-
+*/
     @Test
     @Transactional
     public void createRole() throws Exception {
@@ -169,7 +169,7 @@ public class RoleResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public void getAllRolesWithEagerRelationshipsIsEnabled() throws Exception {
         when(roleServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));

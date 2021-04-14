@@ -17,24 +17,15 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    @Query(value = "select distinct role from Role role left join fetch role.users",
+    @Query(value = "select distinct role from Role role  left join fetch role.actions",
         countQuery = "select count(distinct role) from Role role")
     Page<Role> findAllWithEagerRelationships(Pageable pageable);
 
-    @Query("select distinct role from Role role left join fetch role.users")
+    @Query("select distinct role from Role role  left join fetch role.actions")
     List<Role> findAllWithEagerRelationships();
 
-    @Query("select role from Role role left join fetch role.users where role.id =:id")
+    @Query("select role from Role role left join fetch role.actions where role.id =:id")
     Optional<Role> findOneWithEagerRelationships(@Param("id") Long id);
 
-
-    Page<Role> findAllByNameContains(String name, Pageable pageable);
-
-    @EntityGraph(attributePaths = "actions")
-    Optional<Role> findOneById(Long id);
-
     Optional<Role> findOneByName(String name);
-
-    @EntityGraph(attributePaths = "actions")
-    List<Role> findAllByNameIn(List<String> name);
 }

@@ -1,17 +1,13 @@
 package com.ibdbcompany.ibdb.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -31,11 +27,22 @@ public class Role implements Serializable {
     @NotNull
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
+/**
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnore
-    private Set<User> users = new LinkedHashSet<User>();
+    @NotNull
+    @JoinTable(name = "user_role",
+               joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> users = new HashSet<>();
+*/
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @NotNull
+    @JoinTable(name = "role_action",
+               joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "action_id", referencedColumnName = "id"))
+    private Set<Action> actions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -58,7 +65,7 @@ public class Role implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
+/**
     public Set<User> getUsers() {
         return users;
     }
@@ -70,18 +77,41 @@ public class Role implements Serializable {
 
     public Role addUser(User user) {
         this.users.add(user);
-        user.getRoles().add(this);
         return this;
     }
 
     public Role removeUser(User user) {
         this.users.remove(user);
-        user.getRoles().remove(this);
         return this;
     }
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+*/
+    public Set<Action> getActions() {
+        return actions;
+    }
+
+    public Role actions(Set<Action> actions) {
+        this.actions = actions;
+        return this;
+    }
+
+    public Role addAction(Action action) {
+        this.actions.add(action);
+        action.getRoles().add(this);
+        return this;
+    }
+
+    public Role removeAction(Action action) {
+        this.actions.remove(action);
+        action.getRoles().remove(this);
+        return this;
+    }
+
+    public void setActions(Set<Action> actions) {
+        this.actions = actions;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

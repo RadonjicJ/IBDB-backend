@@ -10,6 +10,15 @@
       "otherEntityField": "login",
       "ownerSide": true,
       "otherEntityRelationshipName": "role"
+    },
+    {
+      "relationshipName": "action",
+      "otherEntityName": "action",
+      "relationshipType": "many-to-many",
+      "relationshipValidateRules": [],
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "role"
     }
   ],
   "fields": [
