@@ -2,6 +2,9 @@ package com.ibdbcompany.ibdb.repository;
 
 import com.ibdbcompany.ibdb.domain.Author;
 
+import com.ibdbcompany.ibdb.domain.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +14,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
+
+
 }

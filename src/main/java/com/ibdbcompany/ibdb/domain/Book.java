@@ -50,6 +50,10 @@ public class Book implements Serializable {
     @JsonIgnoreProperties(value = "books", allowSetters = true)
     private Author author;
 
+    @OneToMany(mappedBy = "book")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Comment> comments = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -134,6 +138,32 @@ public class Book implements Serializable {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public Book comments(Set<Comment> comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    public Book addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setBook(this);
+        return this;
+    }
+
+    public Book removeComment(Comment comment) {
+        this.comments.remove(comment);
+        comment.setBook(null);
+        return this;
+    }
+
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

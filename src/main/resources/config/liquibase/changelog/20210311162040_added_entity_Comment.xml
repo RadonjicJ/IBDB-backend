@@ -19,6 +19,16 @@
             <column name="comment_text" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+      <!--  <column name="date" type="datetime">
+                <constraints nullable="false" />
+            </column>
+       -->
+            <column name="positive_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="negative_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="book_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -27,6 +37,7 @@
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+   <!--     <dropDefaultValue tableName="comment" columnName="date" columnDataType="datetime"/> -->
     </changeSet>
 
     <changeSet id="20210311162040-1-relations" author="jhipster">
@@ -49,6 +60,9 @@
                   tableName="comment">
             <column name="id" type="numeric"/>
             <column name="comment_text" type="string"/>
+    <!--        <column name="date" type="datetime"/>       -->
+            <column name="positive_voice" type="numeric"/>
+            <column name="negative_voice" type="numeric"/>
             <column name="book_id" type="numeric"/>
             <column name="user_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->

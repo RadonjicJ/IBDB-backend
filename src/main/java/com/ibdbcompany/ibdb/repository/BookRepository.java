@@ -27,10 +27,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("select book from Book book left join fetch book.categories where book.id =:id")
     Optional<Book> findOneWithEagerRelationships(@Param("id") Long id);
 
-    Page<Book> findAllByTitleContaining(String title, Pageable pageable);
-
-    Page<Book> findBooksByAuthor_FirstNameContaining(String firstName, Pageable pageable);
-
-    @Query("select book from Book book join Quote quote on quote.book.id=book.id where quote.id=:id")
-    Optional<Book> findBookByQuote(@Param("id") Long id);
+    Page<Book> findBooksByAuthorId (Long id, Pageable pageable);
 }

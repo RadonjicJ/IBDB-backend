@@ -2,6 +2,8 @@ package com.ibdbcompany.ibdb.repository;
 
 import com.ibdbcompany.ibdb.domain.Comment;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +18,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select comment from Comment comment where comment.user.login = ?#{principal.username}")
     List<Comment> findByUserIsCurrentUser();
-}
+
+    Page<Comment> findCommentsByBookId(Long id, Pageable pageable);
+
+ }

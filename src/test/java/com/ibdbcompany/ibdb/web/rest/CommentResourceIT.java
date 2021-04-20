@@ -17,8 +17,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 
+import static com.ibdbcompany.ibdb.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +39,15 @@ public class CommentResourceIT {
 
     private static final String DEFAULT_COMMENT_TEXT = "AAAAAAAAAA";
     private static final String UPDATED_COMMENT_TEXT = "BBBBBBBBBB";
+
+    private static final ZonedDateTime DEFAULT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final Long DEFAULT_POSITIVE_VOICE = 1L;
+    private static final Long UPDATED_POSITIVE_VOICE = 2L;
+
+    private static final Long DEFAULT_NEGATIVE_VOICE = 1L;
+    private static final Long UPDATED_NEGATIVE_VOICE = 2L;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -57,7 +71,10 @@ public class CommentResourceIT {
      */
     public static Comment createEntity(EntityManager em) {
         Comment comment = new Comment()
-            .commentText(DEFAULT_COMMENT_TEXT);
+            .commentText(DEFAULT_COMMENT_TEXT)
+            //.date(DEFAULT_DATE)
+            .positiveVoice(DEFAULT_POSITIVE_VOICE)
+            .negativeVoice(DEFAULT_NEGATIVE_VOICE);
         // Add required entity
         Book book;
         if (TestUtil.findAll(em, Book.class).isEmpty()) {
@@ -83,7 +100,10 @@ public class CommentResourceIT {
      */
     public static Comment createUpdatedEntity(EntityManager em) {
         Comment comment = new Comment()
-            .commentText(UPDATED_COMMENT_TEXT);
+            .commentText(UPDATED_COMMENT_TEXT)
+        //    .date(UPDATED_DATE)
+            .positiveVoice(UPDATED_POSITIVE_VOICE)
+            .negativeVoice(UPDATED_NEGATIVE_VOICE);
         // Add required entity
         Book book;
         if (TestUtil.findAll(em, Book.class).isEmpty()) {
@@ -122,6 +142,9 @@ public class CommentResourceIT {
         assertThat(commentList).hasSize(databaseSizeBeforeCreate + 1);
         Comment testComment = commentList.get(commentList.size() - 1);
         assertThat(testComment.getCommentText()).isEqualTo(DEFAULT_COMMENT_TEXT);
+    //    assertThat(testComment.getDate()).isEqualTo(DEFAULT_DATE);
+        assertThat(testComment.getPositiveVoice()).isEqualTo(DEFAULT_POSITIVE_VOICE);
+        assertThat(testComment.getNegativeVoice()).isEqualTo(DEFAULT_NEGATIVE_VOICE);
     }
 
     @Test
@@ -162,7 +185,26 @@ public class CommentResourceIT {
         List<Comment> commentList = commentRepository.findAll();
         assertThat(commentList).hasSize(databaseSizeBeforeTest);
     }
+/**
+    @Test
+    @Transactional
+    public void checkDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = commentRepository.findAll().size();
+        // set the field null
+        comment.setDate(null);
 
+        // Create the Comment, which fails.
+
+
+        restCommentMockMvc.perform(post("/api/comments")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(comment)))
+            .andExpect(status().isBadRequest());
+
+        List<Comment> commentList = commentRepository.findAll();
+        assertThat(commentList).hasSize(databaseSizeBeforeTest);
+    }
+*/
     @Test
     @Transactional
     public void getAllComments() throws Exception {
@@ -174,9 +216,12 @@ public class CommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(comment.getId().intValue())))
-            .andExpect(jsonPath("$.[*].commentText").value(hasItem(DEFAULT_COMMENT_TEXT)));
+            .andExpect(jsonPath("$.[*].commentText").value(hasItem(DEFAULT_COMMENT_TEXT)))
+            .andExpect(jsonPath("$.[*].date").value(hasItem(sameInstant(DEFAULT_DATE))))
+            .andExpect(jsonPath("$.[*].positiveVoice").value(hasItem(DEFAULT_POSITIVE_VOICE.intValue())))
+            .andExpect(jsonPath("$.[*].negativeVoice").value(hasItem(DEFAULT_NEGATIVE_VOICE.intValue())));
     }
-    
+
     @Test
     @Transactional
     public void getComment() throws Exception {
@@ -188,7 +233,10 @@ public class CommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(comment.getId().intValue()))
-            .andExpect(jsonPath("$.commentText").value(DEFAULT_COMMENT_TEXT));
+            .andExpect(jsonPath("$.commentText").value(DEFAULT_COMMENT_TEXT))
+            .andExpect(jsonPath("$.date").value(sameInstant(DEFAULT_DATE)))
+            .andExpect(jsonPath("$.positiveVoice").value(DEFAULT_POSITIVE_VOICE.intValue()))
+            .andExpect(jsonPath("$.negativeVoice").value(DEFAULT_NEGATIVE_VOICE.intValue()));
     }
     @Test
     @Transactional
@@ -211,7 +259,10 @@ public class CommentResourceIT {
         // Disconnect from session so that the updates on updatedComment are not directly saved in db
         em.detach(updatedComment);
         updatedComment
-            .commentText(UPDATED_COMMENT_TEXT);
+            .commentText(UPDATED_COMMENT_TEXT)
+    //        .date(UPDATED_DATE)
+            .positiveVoice(UPDATED_POSITIVE_VOICE)
+            .negativeVoice(UPDATED_NEGATIVE_VOICE);
 
         restCommentMockMvc.perform(put("/api/comments")
             .contentType(MediaType.APPLICATION_JSON)
@@ -223,6 +274,9 @@ public class CommentResourceIT {
         assertThat(commentList).hasSize(databaseSizeBeforeUpdate);
         Comment testComment = commentList.get(commentList.size() - 1);
         assertThat(testComment.getCommentText()).isEqualTo(UPDATED_COMMENT_TEXT);
+   //     assertThat(testComment.getDate()).isEqualTo(UPDATED_DATE);
+        assertThat(testComment.getPositiveVoice()).isEqualTo(UPDATED_POSITIVE_VOICE);
+        assertThat(testComment.getNegativeVoice()).isEqualTo(UPDATED_NEGATIVE_VOICE);
     }
 
     @Test

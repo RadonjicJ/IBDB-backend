@@ -1,6 +1,7 @@
 package com.ibdbcompany.ibdb.web.rest;
 
 import com.ibdbcompany.ibdb.domain.Book;
+import com.ibdbcompany.ibdb.domain.Quote;
 import com.ibdbcompany.ibdb.service.BookService;
 import com.ibdbcompany.ibdb.web.rest.errors.BadRequestAlertException;
 
@@ -130,45 +131,17 @@ public class BookResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 
-
     /**
-     *  Get Books by title
      *
-     * @param title
-     * @param pageable
-     * @return
-     */
-    @GetMapping("books/title")
-    public ResponseEntity<List<Book>> findAllBookByTitle(@RequestParam String title, Pageable pageable){
-        log.debug("REST request to get Book by Title : {}", title);
-        Page<Book> books = bookService.findAllBookByTitle(title, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), books);
-        return ResponseEntity.ok().headers(headers).body(books.getContent());
-    }
-
-    /**
-     * Get books by author
-     * @param author
-     * @param pageable
-     * @return
-     */
-    @GetMapping("books/author")
-    public ResponseEntity<List<Book>> findAllBookByAuthor(@RequestParam String author, Pageable pageable){
-        log.debug("REST request to get Book by author : {}", author);
-        Page<Book> books = bookService.findAllBookByAuthor(author, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), books);
-        return ResponseEntity.ok().headers(headers).body(books.getContent());
-    }
-
-    /**
-     * Get book by quote
      * @param id
+     * @param pageable
      * @return
      */
-    @GetMapping("books/quote/{id}")
-    public ResponseEntity<Book> findBookByQuote(@PathVariable Long id){
-        log.debug("REST request to get Book by quote : {}", id);
-        Optional<Book> book = bookService.findBookByQuote(id);
-        return ResponseUtil.wrapOrNotFound(book);
+    @GetMapping("/books/author/{id}")
+    public ResponseEntity<List<Book>> findAllBooksByAuthorId(@PathVariable Long id, Pageable pageable){
+        log.debug("REST request to get Book by author id: {id}", id);
+        Page<Book> books = bookService.findAllBooksByAuthorId(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), books);
+        return ResponseEntity.ok().headers(headers).body(books.getContent());
     }
 }

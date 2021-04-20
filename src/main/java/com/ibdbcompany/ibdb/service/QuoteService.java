@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,5 +72,21 @@ public class QuoteService {
     public void delete(Long id) {
         log.debug("Request to delete Quote : {}", id);
         quoteRepository.deleteById(id);
+    }
+
+    /**
+     *
+     * @param id
+     * @param pageable
+     * @return
+     */
+    public Page<Quote> findAllQuotesByBookId(Long id, Pageable pageable){
+        log.debug("Request to get Quotes by book id: {}", id);
+        return quoteRepository.findQuotesByBookId(id, pageable);
+    }
+
+    public Page<Quote> findAllQuotesByAuthorId(Long id, Pageable pageable){
+        log.debug("Request to get Quotes by author id: {}", id);
+        return quoteRepository.findQuotesByAuthorId(id, pageable);
     }
 }

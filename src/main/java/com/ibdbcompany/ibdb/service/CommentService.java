@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.service;
 
+import com.ibdbcompany.ibdb.domain.Book;
 import com.ibdbcompany.ibdb.domain.Comment;
 import com.ibdbcompany.ibdb.repository.CommentRepository;
 import org.slf4j.Logger;
@@ -71,5 +72,16 @@ public class CommentService {
     public void delete(Long id) {
         log.debug("Request to delete Comment : {}", id);
         commentRepository.deleteById(id);
+    }
+
+    /**
+     *
+     * @param id
+     * @param pageable
+     * @return
+     */
+    public Page<Comment> findAllCommentsByBooksId(Long id, Pageable pageable){
+        log.debug("Request to get Comments by book id: {}", id);
+        return commentRepository.findCommentsByBookId(id, pageable);
     }
 }

@@ -4,6 +4,7 @@ import com.ibdbcompany.ibdb.domain.Quote;
 import com.ibdbcompany.ibdb.service.QuoteService;
 import com.ibdbcompany.ibdb.web.rest.errors.BadRequestAlertException;
 
+import com.sun.org.apache.xpath.internal.operations.Quo;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -122,5 +123,22 @@ public class QuoteResource {
         log.debug("REST request to delete Quote : {}", id);
         quoteService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+    }
+
+
+    @GetMapping("/quotes/book/{id}")
+    public ResponseEntity<List<Quote>> findAllQuoteByBookId(@PathVariable Long id, Pageable pageable){
+        log.debug("REST request to get Quote by book id: {}",id);
+        Page<Quote> quotes = quoteService.findAllQuotesByBookId(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), quotes);
+        return ResponseEntity.ok().headers(headers).body(quotes.getContent());
+    }
+
+    @GetMapping("/quotes/author/{id}")
+    public ResponseEntity<List<Quote>> findAllQuoteByAuthorId(@PathVariable Long id, Pageable pageable){
+        log.debug("REST request to get Quote by author id: {id}", id);
+        Page<Quote> quotes = quoteService.findAllQuotesByAuthorId(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), quotes);
+        return ResponseEntity.ok().headers(headers).body(quotes.getContent());
     }
 }

@@ -25,6 +25,19 @@
       "fieldName": "commentText",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "positiveVoice",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "negativeVoice",
+      "fieldType": "Long"
     }
   ],
   "changelogDate": "20210311162040",

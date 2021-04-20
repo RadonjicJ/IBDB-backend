@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 
 /**
  * A Comment.
@@ -26,6 +27,16 @@ public class Comment implements Serializable {
     @NotNull
     @Column(name = "comment_text", nullable = false)
     private String commentText;
+/**
+    @NotNull
+    @Column(name = "date", nullable = false)
+    private ZonedDateTime date;
+*/
+    @Column(name = "positive_voice")
+    private Long positiveVoice;
+
+    @Column(name = "negative_voice")
+    private Long negativeVoice;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -57,6 +68,45 @@ public class Comment implements Serializable {
 
     public void setCommentText(String commentText) {
         this.commentText = commentText;
+    }
+/*
+    public ZonedDateTime getDate() {
+        return date;
+    }
+
+    public Comment date(ZonedDateTime date) {
+        this.date = date;
+        return this;
+    }
+
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
+    }
+*/
+    public Long getPositiveVoice() {
+        return positiveVoice;
+    }
+
+    public Comment positiveVoice(Long positiveVoice) {
+        this.positiveVoice = positiveVoice;
+        return this;
+    }
+
+    public void setPositiveVoice(Long positiveVoice) {
+        this.positiveVoice = positiveVoice;
+    }
+
+    public Long getNegativeVoice() {
+        return negativeVoice;
+    }
+
+    public Comment negativeVoice(Long negativeVoice) {
+        this.negativeVoice = negativeVoice;
+        return this;
+    }
+
+    public void setNegativeVoice(Long negativeVoice) {
+        this.negativeVoice = negativeVoice;
     }
 
     public Book getBook() {
@@ -108,6 +158,9 @@ public class Comment implements Serializable {
         return "Comment{" +
             "id=" + getId() +
             ", commentText='" + getCommentText() + "'" +
+     //       ", date='" + getDate() + "'" +
+            ", positiveVoice=" + getPositiveVoice() +
+            ", negativeVoice=" + getNegativeVoice() +
             "}";
     }
 }

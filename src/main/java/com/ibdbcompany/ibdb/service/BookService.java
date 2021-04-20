@@ -1,6 +1,7 @@
 package com.ibdbcompany.ibdb.service;
 
 import com.ibdbcompany.ibdb.domain.Book;
+import com.ibdbcompany.ibdb.domain.Quote;
 import com.ibdbcompany.ibdb.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class BookService {
     }
 
     /**
-     *
+     * Save a book.
      *
      * @param book the entity to save.
      * @return the persisted entity.
@@ -81,37 +82,15 @@ public class BookService {
         log.debug("Request to delete Book : {}", id);
         bookRepository.deleteById(id);
     }
-    /**
-     * Get books by title
-     *
-     * @param title
-     * @param pageable
-     * @return
-     */
-    public Page<Book> findAllBookByTitle(String title, Pageable pageable){
-        log.debug("Request to get Book by title : {}", title);
-        return bookRepository.findAllByTitleContaining(title, pageable);
-    }
 
     /**
-     * Get books by author
      *
-     * @param firstName
-     * @param pageable
-     * @return
-     */
-    public Page<Book> findAllBookByAuthor(String firstName, Pageable pageable){
-        log.debug("Request to get Book by author : {}", firstName);
-        return bookRepository.findBooksByAuthor_FirstNameContaining(firstName, pageable);
-    }
-
-    /**
-     *  Get Book by quote
      * @param id
+     * @param pageable
      * @return
      */
-    public Optional<Book> findBookByQuote (Long id){
-        log.debug("Request to get Book by quote : {}", id);
-        return bookRepository.findBookByQuote(id);
+    public Page<Book> findAllBooksByAuthorId(Long id, Pageable pageable){
+        log.debug("Request to get Books by author id: {}", id);
+        return bookRepository.findBooksByAuthorId(id, pageable);
     }
 }

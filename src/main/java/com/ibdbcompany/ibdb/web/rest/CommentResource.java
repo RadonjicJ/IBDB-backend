@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.web.rest;
 
+import com.ibdbcompany.ibdb.domain.Book;
 import com.ibdbcompany.ibdb.domain.Comment;
 import com.ibdbcompany.ibdb.service.CommentService;
 import com.ibdbcompany.ibdb.web.rest.errors.BadRequestAlertException;
@@ -122,5 +123,19 @@ public class CommentResource {
         log.debug("REST request to delete Comment : {}", id);
         commentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     *
+     * @param id
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/comments/book/{id}")
+    public ResponseEntity<List<Comment>> findAllCommentsByBookId(@PathVariable Long id, Pageable pageable){
+        log.debug("REST request to get Comments by book id: {id}", id);
+        Page<Comment> comments = commentService.findAllCommentsByBooksId(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), comments);
+        return ResponseEntity.ok().headers(headers).body(comments.getContent());
     }
 }
