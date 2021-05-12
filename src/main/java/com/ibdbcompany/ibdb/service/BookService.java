@@ -93,4 +93,16 @@ public class BookService {
         log.debug("Request to get Books by author id: {}", id);
         return bookRepository.findBooksByAuthorId(id, pageable);
     }
+
+    /**
+     * Get books by title
+     *
+     * @param title
+     * @param pageable
+     * @return
+     */
+    public Page<Book> findAllBookByTitle(String title, Pageable pageable){
+        log.debug("Request to get Book by title : {}", title);
+        return bookRepository.findBooksByTitleContains(title, pageable);
+    }
 }

@@ -144,4 +144,19 @@ public class BookResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), books);
         return ResponseEntity.ok().headers(headers).body(books.getContent());
     }
+
+    /**
+     *  Get Books by title
+     *
+     * @param title
+     * @param pageable
+     * @return
+     */
+    @GetMapping("books/title")
+    public ResponseEntity<List<Book>> findAllBookByTitle(@RequestParam String title, Pageable pageable){
+        log.debug("REST request to get Book by Title : {}", title);
+        Page<Book> books = bookService.findAllBookByTitle(title, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), books);
+        return ResponseEntity.ok().headers(headers).body(books.getContent());
+    }
 }

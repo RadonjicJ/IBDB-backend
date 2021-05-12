@@ -19,7 +19,7 @@
             <column name="title" type="varchar(255)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="ux_book_title" />
             </column>
-            <column name="description" type="varchar(255)">
+            <column name="description" type="varchar(1000)">
                 <constraints nullable="false" />
             </column>
             <column name="image_path" type="varchar(255)">

@@ -19,5 +19,8 @@
   },
   "scripts": {
     "prettier:format": "prettier --write \"{,src/**/}*.{md,json,yml}\""
+  },
+  "dependencies": {
+    "mysql": "^2.18.1"
   }
 }

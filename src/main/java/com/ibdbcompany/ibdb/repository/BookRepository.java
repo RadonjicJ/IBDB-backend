@@ -28,4 +28,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findOneWithEagerRelationships(@Param("id") Long id);
 
     Page<Book> findBooksByAuthorId (Long id, Pageable pageable);
+
+    Page<Book> findBooksByTitleContains(String title, Pageable pageable);
 }
