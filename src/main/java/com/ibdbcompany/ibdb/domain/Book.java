@@ -54,6 +54,10 @@ public class Book implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToOne
+    @JsonIgnoreProperties(value = "books", allowSetters = true)
+    private ImageModel imageModel;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -161,9 +165,21 @@ public class Book implements Serializable {
         return this;
     }
 
-
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public ImageModel getImageModel() {
+        return imageModel;
+    }
+
+    public Book imageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+        return this;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

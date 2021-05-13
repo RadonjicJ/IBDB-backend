@@ -1,7 +1,6 @@
 package com.ibdbcompany.ibdb.web.rest;
 
 import com.ibdbcompany.ibdb.domain.Book;
-import com.ibdbcompany.ibdb.domain.Quote;
 import com.ibdbcompany.ibdb.service.BookService;
 import com.ibdbcompany.ibdb.web.rest.errors.BadRequestAlertException;
 

@@ -1,11 +1,14 @@
 package com.ibdbcompany.ibdb.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ibdbcompany.ibdb.config.Constants;
 
 import com.ibdbcompany.ibdb.domain.Authority;
+import com.ibdbcompany.ibdb.domain.ImageModel;
 import com.ibdbcompany.ibdb.domain.Role;
 import com.ibdbcompany.ibdb.domain.User;
 
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.*;
 import java.time.Instant;
 import java.util.HashSet;
@@ -58,7 +61,6 @@ public class UserDTO {
     private Instant lastModifiedDate;
 
     //private Set<String> authorities;
-
     private Set<Role> roles;
 
     public UserDTO() {

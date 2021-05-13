@@ -1,5 +1,6 @@
 package com.ibdbcompany.ibdb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -35,6 +36,10 @@ public class Author implements Serializable {
     @NotNull
     @Column(name = "biography", nullable = false)
     private String biography;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = "authors", allowSetters = true)
+    private ImageModel imageModel;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -82,6 +87,19 @@ public class Author implements Serializable {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public ImageModel getImageModel() {
+        return imageModel;
+    }
+
+    public Author imageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+        return this;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

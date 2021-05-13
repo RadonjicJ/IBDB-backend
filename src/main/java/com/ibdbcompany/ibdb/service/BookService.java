@@ -1,7 +1,6 @@
 package com.ibdbcompany.ibdb.service;
 
 import com.ibdbcompany.ibdb.domain.Book;
-import com.ibdbcompany.ibdb.domain.Quote;
 import com.ibdbcompany.ibdb.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -24,6 +24,13 @@
       "otherEntityName": "comment",
       "relationshipType": "one-to-many",
       "otherEntityRelationshipName": "book"
+    },
+    {
+      "relationshipName": "imageModel",
+      "otherEntityName": "imageModel",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "book"
     }
   ],
   "fields": [
