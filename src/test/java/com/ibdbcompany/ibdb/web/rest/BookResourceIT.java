@@ -46,8 +46,6 @@ public class BookResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_IMAGE_PATH = "AAAAAAAAAA";
-    private static final String UPDATED_IMAGE_PATH = "BBBBBBBBBB";
 
     @Autowired
     private BookRepository bookRepository;
@@ -78,8 +76,7 @@ public class BookResourceIT {
     public static Book createEntity(EntityManager em) {
         Book book = new Book()
             .title(DEFAULT_TITLE)
-            .description(DEFAULT_DESCRIPTION)
-            .imagePath(DEFAULT_IMAGE_PATH);
+            .description(DEFAULT_DESCRIPTION);
         // Add required entity
         Category category;
         if (TestUtil.findAll(em, Category.class).isEmpty()) {
@@ -111,8 +108,7 @@ public class BookResourceIT {
     public static Book createUpdatedEntity(EntityManager em) {
         Book book = new Book()
             .title(UPDATED_TITLE)
-            .description(UPDATED_DESCRIPTION)
-            .imagePath(UPDATED_IMAGE_PATH);
+            .description(UPDATED_DESCRIPTION);
         // Add required entity
         Category category;
         if (TestUtil.findAll(em, Category.class).isEmpty()) {
@@ -157,7 +153,6 @@ public class BookResourceIT {
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testBook.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testBook.getImagePath()).isEqualTo(DEFAULT_IMAGE_PATH);
     }
 
     @Test
@@ -220,25 +215,6 @@ public class BookResourceIT {
 
     @Test
     @Transactional
-    public void checkImagePathIsRequired() throws Exception {
-        int databaseSizeBeforeTest = bookRepository.findAll().size();
-        // set the field null
-        book.setImagePath(null);
-
-        // Create the Book, which fails.
-
-
-        restBookMockMvc.perform(post("/api/books")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(book)))
-            .andExpect(status().isBadRequest());
-
-        List<Book> bookList = bookRepository.findAll();
-        assertThat(bookList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllBooks() throws Exception {
         // Initialize the database
         bookRepository.saveAndFlush(book);
@@ -249,10 +225,9 @@ public class BookResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(book.getId().intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].imagePath").value(hasItem(DEFAULT_IMAGE_PATH)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public void getAllBooksWithEagerRelationshipsIsEnabled() throws Exception {
         when(bookServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
@@ -285,8 +260,7 @@ public class BookResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(book.getId().intValue()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.imagePath").value(DEFAULT_IMAGE_PATH));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
     @Test
     @Transactional
@@ -310,8 +284,7 @@ public class BookResourceIT {
         em.detach(updatedBook);
         updatedBook
             .title(UPDATED_TITLE)
-            .description(UPDATED_DESCRIPTION)
-            .imagePath(UPDATED_IMAGE_PATH);
+            .description(UPDATED_DESCRIPTION);
 
         restBookMockMvc.perform(put("/api/books")
             .contentType(MediaType.APPLICATION_JSON)
@@ -324,7 +297,6 @@ public class BookResourceIT {
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testBook.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testBook.getImagePath()).isEqualTo(UPDATED_IMAGE_PATH);
     }
 
     @Test

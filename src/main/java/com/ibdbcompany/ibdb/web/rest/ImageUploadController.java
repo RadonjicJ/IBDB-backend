@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 ;
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api")
 public class ImageUploadController {
 
@@ -53,7 +52,7 @@ public class ImageUploadController {
         System.out.println("Image updated");
         return updatedImage;
     }
-
+/**
     @DeleteMapping("/image/{id}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
         final Optional<ImageModel> retrievedImage = imageRepository.findById(id);
@@ -61,4 +60,5 @@ public class ImageUploadController {
         imageRepository.delete(img);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
+ */
 }

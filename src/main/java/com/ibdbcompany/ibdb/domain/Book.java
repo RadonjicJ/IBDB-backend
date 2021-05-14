@@ -33,10 +33,6 @@ public class Book implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @NotNull
-    @Column(name = "image_path", nullable = false)
-    private String imagePath;
-
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @NotNull
@@ -91,19 +87,6 @@ public class Book implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public Book imagePath(String imagePath) {
-        this.imagePath = imagePath;
-        return this;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public Set<Category> getCategories() {
@@ -206,7 +189,6 @@ public class Book implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", description='" + getDescription() + "'" +
-            ", imagePath='" + getImagePath() + "'" +
             "}";
     }
 }
