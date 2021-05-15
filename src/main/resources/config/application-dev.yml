@@ -38,8 +38,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/ibdb?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: root
+    username: Jovan_DataBase
+    password: 1DataBase@Jovan
     hikari:
       poolName: Hikari
       auto-commit: false
