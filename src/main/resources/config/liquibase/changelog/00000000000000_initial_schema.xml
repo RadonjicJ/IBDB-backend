@@ -42,9 +42,6 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
-            <column name="image_model_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
         </createTable>
 
         <createTable tableName="role">
@@ -99,12 +96,6 @@
         <addNotNullConstraint   columnName="password_hash"
                                 columnDataType="varchar(60)"
                                 tableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="image_model_id"
-                                 baseTableName="jhi_user"
-                                 constraintName="fk_jhi_user_image_model_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="image_table"/>
 
         <loadData
                   file="config/liquibase/data/user.csv"
