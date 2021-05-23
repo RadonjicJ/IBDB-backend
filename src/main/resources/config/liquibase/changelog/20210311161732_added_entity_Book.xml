@@ -71,6 +71,13 @@
             <column name="comment_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
+        <loadData
+            file="config/liquibase/fake-data/book_category.csv"
+            separator=";"
+            tableName="book_category">
+            <column name="category_id" type="numeric"/>
+            <column name="book_id" type="numeric"/>
+        </loadData>
     </changeSet>
 
 </databaseChangeLog>
