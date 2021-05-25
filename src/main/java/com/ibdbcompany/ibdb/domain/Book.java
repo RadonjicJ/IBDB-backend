@@ -33,6 +33,13 @@ public class Book implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "positive_voice")
+    private Long positiveVoice;
+
+    @Column(name = "negative_voice")
+    private Long negativeVoice;
+
+
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @NotNull
@@ -136,6 +143,28 @@ public class Book implements Serializable {
         return this;
     }
 
+    public Long getPositiveVoice() {
+        return positiveVoice;
+    }
+
+    public Book positiveVoice(Long positiveVoice) {
+        this.positiveVoice = positiveVoice;
+        return this;
+    }
+
+    public void setPositiveVoice(Long positiveVoice) {
+        this.positiveVoice = positiveVoice;
+    }
+
+    public Long getNegativeVoice() {
+        return negativeVoice;
+    }
+
+    public Book negativeVoice(Long negativeVoice) {
+        this.negativeVoice = negativeVoice;
+        return this;
+    }
+
     public Book addComment(Comment comment) {
         this.comments.add(comment);
         comment.setBook(this);
@@ -189,6 +218,8 @@ public class Book implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", description='" + getDescription() + "'" +
+            ", positiveVoice=" + getPositiveVoice() +
+            ", negativeVoice=" + getNegativeVoice() +
             "}";
     }
 }

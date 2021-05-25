@@ -22,7 +22,7 @@
             <column name="last_name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="biography" type="varchar(255)">
+            <column name="biography" type="varchar(1000)">
                 <constraints nullable="false" />
             </column>
             <column name="image_model_id" type="bigint">

@@ -31,6 +31,12 @@
             <column name="image_model_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="positive_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="negative_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
@@ -69,6 +75,8 @@
             <column name="description" type="string"/>
             <column name="author_id" type="numeric"/>
             <column name="comment_id" type="numeric"/>
+            <column name="positive_voice" type="numeric"/>
+            <column name="negative_voice" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
         <loadData
