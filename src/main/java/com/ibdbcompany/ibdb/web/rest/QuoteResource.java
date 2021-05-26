@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+
 /**
  * REST controller for managing {@link com.ibdbcompany.ibdb.domain.Quote}.
  */
