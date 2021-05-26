@@ -2,10 +2,7 @@ package com.ibdbcompany.ibdb.service;
 
 import com.google.common.base.Strings;
 import com.ibdbcompany.ibdb.config.Constants;
-import com.ibdbcompany.ibdb.domain.Authority;
-import com.ibdbcompany.ibdb.domain.Book;
-import com.ibdbcompany.ibdb.domain.Role;
-import com.ibdbcompany.ibdb.domain.User;
+import com.ibdbcompany.ibdb.domain.*;
 import com.ibdbcompany.ibdb.repository.AuthorityRepository;
 import com.ibdbcompany.ibdb.repository.RoleRepository;
 import com.ibdbcompany.ibdb.repository.UserRepository;
@@ -168,7 +165,10 @@ public class UserService {
         if (userDTO.getRoles() != null) {
             user.setRoles(userDTO.getRoles());
         }
-
+        // Set image
+        if (userDTO.getImageModel() != null) {
+            user.setImageModel(userDTO.getImageModel());
+        }
         userRepository.save(user);
         log.debug("Created Information for User: {}", user);
         return user;
@@ -208,6 +208,11 @@ public class UserService {
                 managedRoles.clear();
                 managedRoles.addAll(userDTO.getRoles());
 
+                // Set image
+
+                user.setImageModel(userDTO.getImageModel());
+
+
                 log.debug("Changed Information for User: {}", user);
                 return user;
             })
@@ -237,7 +242,7 @@ public class UserService {
      * @param langKey   language key.
      * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl, ImageModel imageModel) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(user -> {
@@ -248,6 +253,7 @@ public class UserService {
                 }
                 user.setLangKey(langKey);
                 user.setImageUrl(imageUrl);
+                user.setImageModel(imageModel);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });

@@ -62,6 +62,9 @@ public class UserDTO {
 
     //private Set<String> authorities;
     private Set<Role> roles;
+    @ManyToOne
+    @JsonIgnoreProperties(value = "users", allowSetters = true)
+    private ImageModel imageModel;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -84,6 +87,7 @@ public class UserDTO {
             .map(Authority::getName)
             .collect(Collectors.toSet());*/
         this.roles = new HashSet<>(user.getRoles());
+        this.imageModel = user.getImageModel();
     }
 
     public String getPassword() {
@@ -205,6 +209,21 @@ public class UserDTO {
         this.roles = roles;
     }
 
+    public ImageModel getImageModel() {
+        return imageModel;
+    }
+
+    public UserDTO imageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+        return this;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+    }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -222,6 +241,7 @@ public class UserDTO {
             ", lastModifiedDate=" + lastModifiedDate +
          //   ", authorities=" + authorities +
             ", roles=" + roles +
+            ", imageModel" + imageModel +
             "}";
     }
 }

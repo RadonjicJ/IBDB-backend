@@ -96,6 +96,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne
+    @JsonIgnoreProperties(value = "users", allowSetters = true)
+    private ImageModel imageModel;
+
     public Set<Role> getRoles() {
         return roles;
     }
@@ -217,6 +221,21 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setLangKey(String langKey) {
         this.langKey = langKey;
     }
+
+    public ImageModel getImageModel() {
+        return imageModel;
+    }
+
+    public User imageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+        return this;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+    }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+
 
     @Override
     public boolean equals(Object o) {
