@@ -85,6 +85,18 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "positive_voice_book")
+    private Boolean positiveVoiceBook;
+
+    @Column(name = "negative_voice_book")
+    private Boolean negativeVoiceBook;
+
+    @Column(name = "positive_voice_comment")
+    private Boolean positiveVoiceComment;
+
+    @Column(name = "negative_voice_comment")
+    private Boolean negativeVoiceComment;
+
     @JsonIgnore
     @ManyToMany() //fetch = FetchType.EAGER
     @NotNull
@@ -234,6 +246,39 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setImageModel(ImageModel imageModel) {
         this.imageModel = imageModel;
     }
+
+    public Boolean getPositiveVoiceBook() {
+        return positiveVoiceBook;
+    }
+
+    public void setPositiveVoiceBook(Boolean positiveVoiceBook) {
+        this.positiveVoiceBook = positiveVoiceBook;
+    }
+
+    public Boolean getNegativeVoiceBook() {
+        return negativeVoiceBook;
+    }
+
+    public void setNegativeVoiceBook(Boolean negativeVoiceBook) {
+        this.negativeVoiceBook = negativeVoiceBook;
+    }
+
+    public Boolean getPositiveVoiceComment() {
+        return positiveVoiceComment;
+    }
+
+    public void setPositiveVoiceComment(Boolean positiveVoiceComment) {
+        this.positiveVoiceComment = positiveVoiceComment;
+    }
+
+    public Boolean getNegativeVoiceComment() {
+        return negativeVoiceComment;
+    }
+
+    public void setNegativeVoiceComment(Boolean negativeVoiceComment) {
+        this.negativeVoiceComment = negativeVoiceComment;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
 

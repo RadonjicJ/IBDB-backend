@@ -45,6 +45,19 @@
             <column name="image_model_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="positive_voice_book" type="boolean"  defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="negative_voice_book" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="positive_voice_comment" type="boolean"  defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="negative_voice_comment" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+
         </createTable>
 
         <createTable tableName="role">
