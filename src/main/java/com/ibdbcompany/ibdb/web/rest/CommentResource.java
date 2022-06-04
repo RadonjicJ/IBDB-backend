@@ -55,9 +55,11 @@ public class CommentResource {
     @PostMapping("/comments")
     public ResponseEntity<Comment> createComment(@Valid @RequestBody Comment comment) throws URISyntaxException {
         log.debug("REST request to save Comment : {}", comment);
-        if (comment.getId() != null) {
+        if (comment.getId() != null && comment.getId()!=0) {
             throw new BadRequestAlertException("A new comment cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        comment.setId(null);
+
         Comment result = commentService.save(comment);
         return ResponseEntity.created(new URI("/api/comments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))

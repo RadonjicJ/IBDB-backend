@@ -119,6 +119,11 @@ public class UserService {
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(true);
+
+        newUser.setNegativeVoiceBook(false);
+        newUser.setPositiveVoiceBook(false);
+        newUser.setNegativeVoiceComment(false);
+        newUser.setPositiveVoiceComment(false);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
 
@@ -160,6 +165,10 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        user.setPositiveVoiceComment(false);
+        user.setNegativeVoiceComment(false);
+        user.setPositiveVoiceBook(false);
+        user.setNegativeVoiceBook(false);
 
         // Set roles
         if (userDTO.getRoles() != null) {
