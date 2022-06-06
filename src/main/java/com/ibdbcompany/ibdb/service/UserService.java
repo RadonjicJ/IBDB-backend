@@ -120,10 +120,8 @@ public class UserService {
         // new user is not active
         newUser.setActivated(true);
 
-        newUser.setNegativeVoiceBook(false);
-        newUser.setPositiveVoiceBook(false);
-        newUser.setNegativeVoiceComment(false);
-        newUser.setPositiveVoiceComment(false);
+        Set<UserBook> userBooks = new HashSet<>();
+
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
 
@@ -165,10 +163,8 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
-        user.setPositiveVoiceComment(false);
-        user.setNegativeVoiceComment(false);
-        user.setPositiveVoiceBook(false);
-        user.setNegativeVoiceBook(false);
+
+        user.setUserbook(null);
 
         // Set roles
         if (userDTO.getRoles() != null) {
@@ -211,6 +207,11 @@ public class UserService {
                     String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
                     user.setPassword(encryptedPassword);
                 }
+
+                // Set userBooks
+                Set<UserBook> managedUserBooks = user.getUserbook();
+                managedUserBooks.clear();
+                managedUserBooks.addAll(userDTO.getUserBooks());
 
                 // Set roles
                 Set<Role> managedRoles = user.getRoles();

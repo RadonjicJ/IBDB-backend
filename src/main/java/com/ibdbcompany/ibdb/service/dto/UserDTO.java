@@ -3,10 +3,7 @@ package com.ibdbcompany.ibdb.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ibdbcompany.ibdb.config.Constants;
 
-import com.ibdbcompany.ibdb.domain.Authority;
-import com.ibdbcompany.ibdb.domain.ImageModel;
-import com.ibdbcompany.ibdb.domain.Role;
-import com.ibdbcompany.ibdb.domain.User;
+import com.ibdbcompany.ibdb.domain.*;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.*;
@@ -62,6 +59,9 @@ public class UserDTO {
 
     //private Set<String> authorities;
     private Set<Role> roles;
+
+    private Set<UserBook> userBooks;
+
     @ManyToOne
     @JsonIgnoreProperties(value = "users", allowSetters = true)
     private ImageModel imageModel;
@@ -87,6 +87,7 @@ public class UserDTO {
             .map(Authority::getName)
             .collect(Collectors.toSet());*/
         this.roles = new HashSet<>(user.getRoles());
+        this.userBooks = user.getUserbook();
         this.imageModel = user.getImageModel();
     }
 
@@ -207,6 +208,14 @@ public class UserDTO {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<UserBook> getUserBooks() {
+        return userBooks;
+    }
+
+    public void setUserBooks(Set<UserBook> userBooks) {
+        this.userBooks = userBooks;
     }
 
     public ImageModel getImageModel() {

@@ -45,17 +45,8 @@
             <column name="image_model_id" type="bigint">
                 <constraints nullable="true" />
             </column>
-            <column name="positive_voice_book" type="boolean"  defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-            <column name="negative_voice_book" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-            <column name="positive_voice_comment" type="boolean"  defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-            <column name="negative_voice_comment" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
+            <column name="userbook_id" type="bigint">
+                <constraints nullable="true" />
             </column>
 
         </createTable>
@@ -78,6 +69,121 @@
             </column>
         </createTable>
 
+        <createTable tableName="book">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_book_title" />
+            </column>
+            <column name="description" type="varchar(1000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="author_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="userbook_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="image_model_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="positive_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="negative_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+
+        <createTable tableName="author">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="biography" type="varchar(1000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="image_model_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+
+        <createTable tableName="user_book">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="positive_voice" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="negative_voice" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="book_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_book"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_like_book"
+                                 referencedTableName="jhi_user"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="user_book"
+                                 baseColumnNames="book_id"
+                                 constraintName="fk_book_like_book"
+                                 referencedTableName="book"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="jhi_user"
+                                 baseColumnNames="userbook_id"
+                                 constraintName="fk_user_book_id_like"
+                                 referencedTableName="user_book"
+                                 referencedColumnNames="id"/>
+
+        <addNotNullConstraint tableName="user_book"
+                              columnName="positive_voice"
+                              columnDataType="boolean"
+                              defaultNullValue="false"/>
+
+        <addNotNullConstraint tableName="user_book"
+                              columnName="negative_voice"
+                              columnDataType="boolean"
+                              defaultNullValue="false"/>
+
+        <createTable tableName="category">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_category_name" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+
+        <createTable tableName="book_category">
+            <column name="category_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="book_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="book_id, category_id" tableName="book_category"/>
         <createTable tableName="image_table">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -113,6 +219,12 @@
                                 columnDataType="varchar(60)"
                                 tableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="image_model_id"
+                                 baseTableName="author"
+                                 constraintName="fk_author_image_model_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image_table"/>
+
         <loadData
                   file="config/liquibase/data/user.csv"
                   separator=";"
@@ -130,11 +242,51 @@
         </loadData>
 
         <loadData
+            file="config/liquibase/fake-data/author.csv"
+            separator=";"
+            tableName="author">
+            <column name="id" type="numeric"/>
+            <column name="first_name" type="string"/>
+            <column name="last_name" type="string"/>
+            <column name="biography" type="string"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+
+        <loadData
                   file="config/liquibase/data/user_role.csv"
                   separator=";"
                   tableName="user_role">
             <column name="user_id" type="numeric"/>
             <column name="role_id" type="numeric"/>
+        </loadData>
+
+        <loadData
+            file="config/liquibase/fake-data/book.csv"
+            separator=";"
+            tableName="book">
+            <column name="id" type="numeric"/>
+            <column name="title" type="string"/>
+            <column name="description" type="string"/>
+            <column name="author_id" type="numeric"/>
+            <column name="comment_id" type="numeric"/>
+            <column name="positive_voice" type="numeric"/>
+            <column name="negative_voice" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+        <loadData
+            file="config/liquibase/fake-data/category.csv"
+            separator=";"
+            tableName="category">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+        <loadData
+            file="config/liquibase/fake-data/book_category.csv"
+            separator=";"
+            tableName="book_category">
+            <column name="category_id" type="numeric"/>
+            <column name="book_id" type="numeric"/>
         </loadData>
 
         <loadData
@@ -178,6 +330,30 @@
                                  constraintName="fk_action_role_id"
                                  referencedColumnNames="id"
                                  referencedTableName="action"/>
+
+        <addForeignKeyConstraint baseColumnNames="book_id"
+                                 baseTableName="book_category"
+                                 constraintName="fk_book_category_book_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="book"/>
+
+        <addForeignKeyConstraint baseColumnNames="category_id"
+                                 baseTableName="book_category"
+                                 constraintName="fk_book_category_category_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="category"/>
+
+        <addForeignKeyConstraint baseColumnNames="author_id"
+                                 baseTableName="book"
+                                 constraintName="fk_book_author_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="author"/>
+
+        <addForeignKeyConstraint baseColumnNames="image_model_id"
+                                 baseTableName="book"
+                                 constraintName="fk_book_image_model_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image_table"/>
 
         <loadData
             file="config/liquibase/data/action.csv"

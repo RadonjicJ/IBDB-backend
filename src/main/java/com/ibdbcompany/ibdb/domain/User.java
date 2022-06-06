@@ -85,21 +85,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
-    @Column(name = "positive_voice_book")
-    private Boolean positiveVoiceBook;
-
-    @Column(name = "negative_voice_book")
-    private Boolean negativeVoiceBook;
-
-    @Column(name = "positive_voice_comment")
-    private Boolean positiveVoiceComment;
-
-    @Column(name = "negative_voice_comment")
-    private Boolean negativeVoiceComment;
-
     @JsonIgnore
     @ManyToMany() //fetch = FetchType.EAGER
-    @NotNull
     @JoinTable(name = "user_role",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
@@ -107,6 +94,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<UserBook> userbook = new HashSet<>();
+
 
     @ManyToOne
     @JsonIgnoreProperties(value = "users", allowSetters = true)
@@ -120,7 +112,24 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.roles = roles;
         return this;
     }
-/**
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public Set<UserBook> getUserbook() {
+        return userbook;
+    }
+
+    public void setUserbook(Set<UserBook> userbook) {
+        this.userbook = userbook;
+    }
+
+    /**
     public User addRole(Role role) {
         this.roles.add(role);
         role.getUsers().add(this);
@@ -133,9 +142,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return this;
     }
 */
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
     public Long getId() {
         return id;
@@ -245,38 +251,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setImageModel(ImageModel imageModel) {
         this.imageModel = imageModel;
-    }
-
-    public Boolean getPositiveVoiceBook() {
-        return positiveVoiceBook;
-    }
-
-    public void setPositiveVoiceBook(Boolean positiveVoiceBook) {
-        this.positiveVoiceBook = positiveVoiceBook;
-    }
-
-    public Boolean getNegativeVoiceBook() {
-        return negativeVoiceBook;
-    }
-
-    public void setNegativeVoiceBook(Boolean negativeVoiceBook) {
-        this.negativeVoiceBook = negativeVoiceBook;
-    }
-
-    public Boolean getPositiveVoiceComment() {
-        return positiveVoiceComment;
-    }
-
-    public void setPositiveVoiceComment(Boolean positiveVoiceComment) {
-        this.positiveVoiceComment = positiveVoiceComment;
-    }
-
-    public Boolean getNegativeVoiceComment() {
-        return negativeVoiceComment;
-    }
-
-    public void setNegativeVoiceComment(Boolean negativeVoiceComment) {
-        this.negativeVoiceComment = negativeVoiceComment;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -57,6 +57,11 @@ public class Book implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Comment> comments = new HashSet<>();
 
+    @OneToMany(mappedBy = "book")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<UserBook> userbook = new HashSet<>();
+
+
     @ManyToOne
     @JsonIgnoreProperties(value = "books", allowSetters = true)
     private ImageModel imageModel;
@@ -116,6 +121,13 @@ public class Book implements Serializable {
         category.getBooks().remove(this);
         return this;
     }
+    public Set<UserBook> getUserbook() {
+        return userbook;
+    }
+
+    public void setUserbook(Set<UserBook> userbook) {
+        this.userbook = userbook;
+    }
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
@@ -141,6 +153,10 @@ public class Book implements Serializable {
     public Book comments(Set<Comment> comments) {
         this.comments = comments;
         return this;
+    }
+
+    public void setNegativeVoice(Long negativeVoice) {
+        this.negativeVoice = negativeVoice;
     }
 
     public Long getPositiveVoice() {
