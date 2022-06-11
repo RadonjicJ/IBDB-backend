@@ -5,6 +5,7 @@ import com.ibdbcompany.ibdb.config.Constants;
 import com.ibdbcompany.ibdb.domain.*;
 import com.ibdbcompany.ibdb.repository.AuthorityRepository;
 import com.ibdbcompany.ibdb.repository.RoleRepository;
+import com.ibdbcompany.ibdb.repository.UserCommentRepository;
 import com.ibdbcompany.ibdb.repository.UserRepository;
 import com.ibdbcompany.ibdb.security.AuthoritiesConstants;
 import com.ibdbcompany.ibdb.security.SecurityUtils;
@@ -122,6 +123,7 @@ public class UserService {
 
         Set<UserBook> userBooks = new HashSet<>();
 
+        Set<UserComment> userComments = new HashSet<>();
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
 
@@ -165,6 +167,7 @@ public class UserService {
         user.setActivated(true);
 
         user.setUserbook(null);
+        user.setUserComments(null);
 
         // Set roles
         if (userDTO.getRoles() != null) {
@@ -209,9 +212,7 @@ public class UserService {
                 }
 
                 // Set userBooks
-                Set<UserBook> managedUserBooks = user.getUserbook();
-                managedUserBooks.clear();
-                managedUserBooks.addAll(userDTO.getUserBooks());
+                user.setUserbook(userDTO.getUserBooks());
 
                 // Set roles
                 Set<Role> managedRoles = user.getRoles();
@@ -305,7 +306,6 @@ public class UserService {
     public Page<UserDTO> findAllUsersByLogin(String login, Pageable pageable) {
         return userRepository.findAllByLoginNotAndLoginContains(Constants.ANONYMOUS_USER, login, pageable).map(UserDTO::new);
     }
-
         /**
          * Not activated users should be automatically deleted after 3 days.
          * <p>

@@ -9,6 +9,8 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Comment.
@@ -48,6 +50,10 @@ public class Comment implements Serializable {
     @JsonIgnoreProperties(value = "comments", allowSetters = true)
     private User user;
 
+    @OneToMany(mappedBy = "comment")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<UserComment> usercomment = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -83,6 +89,15 @@ public class Comment implements Serializable {
         this.date = date;
     }
 */
+
+    public Set<UserComment> getUserComments() {
+        return usercomment;
+    }
+
+    public void setUserComments(Set<UserComment> userComments) {
+        this.usercomment = userComments;
+    }
+
     public Long getPositiveVoice() {
         return positiveVoice;
     }

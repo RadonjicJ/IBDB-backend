@@ -48,6 +48,9 @@
             <column name="userbook_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="usercomment_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
 
         </createTable>
 
@@ -163,6 +166,95 @@
                               columnName="negative_voice"
                               columnDataType="boolean"
                               defaultNullValue="false"/>
+
+
+        <createTable tableName="comment">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="comment_text" type="varchar(1000)">
+                <constraints nullable="false" />
+            </column>
+            <!--  <column name="date" type="datetime">
+                      <constraints nullable="false" />
+                  </column>
+             -->
+            <column name="positive_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="negative_voice" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="book_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+
+
+        <createTable tableName="user_comment">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="positive_voice" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="negative_voice" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="user_comment"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_like_comment"
+                                 referencedTableName="jhi_user"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="user_comment"
+                                 baseColumnNames="comment_id"
+                                 constraintName="fk_comment_like_comment"
+                                 referencedTableName="comment"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="jhi_user"
+                                 baseColumnNames="usercomment_id"
+                                 constraintName="fk_user_comment_id_like"
+                                 referencedTableName="user_comment"
+                                 referencedColumnNames="id"/>
+
+        <addNotNullConstraint tableName="user_comment"
+                              columnName="positive_voice"
+                              columnDataType="boolean"
+                              defaultNullValue="false"/>
+
+        <addNotNullConstraint tableName="user_comment"
+                              columnName="negative_voice"
+                              columnDataType="boolean"
+                              defaultNullValue="false"/>
+
+
+        <loadData
+            file="config/liquibase/fake-data/comment.csv"
+            separator=";"
+            tableName="comment">
+            <column name="id" type="numeric"/>
+            <column name="comment_text" type="string"/>
+            <!--        <column name="date" type="datetime"/>       -->
+            <column name="positive_voice" type="numeric"/>
+            <column name="negative_voice" type="numeric"/>
+            <column name="book_id" type="numeric"/>
+            <column name="user_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
 
         <createTable tableName="category">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">

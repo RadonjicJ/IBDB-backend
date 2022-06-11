@@ -99,6 +99,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserBook> userbook = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<UserComment> usercomment = new HashSet<>();
+
 
     @ManyToOne
     @JsonIgnoreProperties(value = "users", allowSetters = true)
@@ -119,6 +123,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public boolean isActivated() {
         return activated;
+    }
+
+    public Set<UserComment> getUserComments() {
+        return usercomment;
+    }
+
+    public void setUserComments(Set<UserComment> userComments) {
+        this.usercomment = userComments;
     }
 
     public Set<UserBook> getUserbook() {

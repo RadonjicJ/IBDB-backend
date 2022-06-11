@@ -62,6 +62,8 @@ public class UserDTO {
 
     private Set<UserBook> userBooks;
 
+    private Set<UserComment> userComments;
+
     @ManyToOne
     @JsonIgnoreProperties(value = "users", allowSetters = true)
     private ImageModel imageModel;
@@ -88,6 +90,7 @@ public class UserDTO {
             .collect(Collectors.toSet());*/
         this.roles = new HashSet<>(user.getRoles());
         this.userBooks = user.getUserbook();
+        this.userComments = user.getUserComments();
         this.imageModel = user.getImageModel();
     }
 
@@ -217,6 +220,16 @@ public class UserDTO {
     public void setUserBooks(Set<UserBook> userBooks) {
         this.userBooks = userBooks;
     }
+
+
+    public Set<UserComment> getUserComments() {
+        return userComments;
+    }
+
+    public void setUserComments(Set<UserComment> userComments) {
+        this.userComments = userComments;
+    }
+
 
     public ImageModel getImageModel() {
         return imageModel;
