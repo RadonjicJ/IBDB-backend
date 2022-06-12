@@ -146,6 +146,8 @@
                                  referencedTableName="jhi_user"
                                  referencedColumnNames="id"/>
 
+        <addUniqueConstraint tableName="user_book" columnNames="user_id , book_id" constraintName="idx_userbook_unique"/>
+
         <addForeignKeyConstraint baseTableName="user_book"
                                  baseColumnNames="book_id"
                                  constraintName="fk_book_like_book"
@@ -220,11 +222,16 @@
                                  referencedTableName="jhi_user"
                                  referencedColumnNames="id"/>
 
+        <addUniqueConstraint tableName="user_comment" columnNames="user_id , comment_id" constraintName="idx_usercomment_unique"/>
+
+
         <addForeignKeyConstraint baseTableName="user_comment"
                                  baseColumnNames="comment_id"
                                  constraintName="fk_comment_like_comment"
                                  referencedTableName="comment"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
         <addForeignKeyConstraint baseTableName="jhi_user"
                                  baseColumnNames="usercomment_id"
                                  constraintName="fk_user_comment_id_like"
